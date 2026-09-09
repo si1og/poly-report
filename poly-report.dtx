@@ -1,0 +1,241 @@
+% \iffalse
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+  \DocInput{poly-report.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \GetFileInfo{poly-report.sty}
+% \title{Пакет \textsf{poly-report}}
+% \author{Ilya Semenov}
+% \date{\filedate}
+% \maketitle
+%
+% Общие настройки и макросы для учебных отчётов в \LaTeX.
+%
+% \StopEventually{}
+%
+% \section{Реализация}
+%
+%    \begin{macrocode}
+%<*package>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{poly-report}[2026/09/09 Shared university report style]
+
+\RequirePackage[14pt]{extsizes}
+\RequirePackage[T2A]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[russian]{babel}
+\RequirePackage{geometry}
+\geometry{left=2.5cm, right=2.5cm, top=2cm, bottom=2cm}
+\RequirePackage[small]{titlesec}
+\RequirePackage{enumitem}
+
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{patterns.meta}
+\usetikzlibrary{arrows}
+\usetikzlibrary{fit}
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{caption}
+\RequirePackage{multicol}
+\RequirePackage{float}
+\floatstyle{plaintop}
+\restylefloat{listing}
+
+\RequirePackage{tabularx}
+\RequirePackage{tabularray}
+\DeclareTblrTemplate{contfoot-text}{normal}{Продолжение на следующей странице}
+\SetTblrTemplate{contfoot-text}{normal}
+\DeclareTblrTemplate{conthead-text}{normal}{(Продолжение)}
+\SetTblrTemplate{conthead-text}{normal}
+\UseTblrLibrary{amsmath}
+\UseTblrLibrary{tikz}
+
+\RequirePackage{booktabs}
+\RequirePackage{multirow}
+\RequirePackage{indentfirst}
+\RequirePackage{pdfpages}
+\setlength{\columnsep}{0.8cm}
+
+\captionsetup[listing]{
+    position=above,
+    singlelinecheck=false,
+    justification=raggedright,
+    skip=0pt,
+    font=normalsize,
+}
+
+\RequirePackage{fvextra}
+\RequirePackage{minted}
+\usemintedstyle{lovelace}
+\setminted{
+    fontsize=\small,
+    baselinestretch=1.0,
+    breaklines,
+    frame=none,
+    numbersep=8pt,
+}
+\renewcommand{\theFancyVerbLine}{%
+    \small\ttfamily\textcolor{gray}{\arabic{FancyVerbLine}}%
+}
+\renewcommand{\listingscaption}{Листинг}
+
+\RequirePackage[
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue,
+    filecolor=blue,
+    pdfborder={0 0 0}
+]{hyperref}
+
+% \img[width][includegraphics options]{path}{caption}{post-caption commands}
+\NewDocumentCommand{\img}{O{0.9} O{} m m m}{
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=#1\textwidth,#2]{#3}
+        \caption{#4}
+        #5
+    \end{figure}
+}
+
+\let\screenshot\img
+
+% \imgGrid[gap](colspec){cells}{caption}{post-caption commands}
+\NewDocumentCommand{\imgGrid}{O{1ex} D(){X[c,m] X[c,m]} m m m}{
+    \begin{figure}[H]
+        \centering
+        \begin{tblr}{
+            width=\textwidth,
+            colspec={#2},
+            columns={colsep=\dimexpr#1/2\relax},
+            column{1}={leftsep=0pt},
+            column{Z}={rightsep=0pt},
+            rows={rowsep=\dimexpr#1/2\relax},
+            row{1}={abovesep=0pt},
+            row{Z}={belowsep=0pt}
+        }
+            #3
+        \end{tblr}
+        \caption{#4}
+        #5
+    \end{figure}
+}
+
+\NewDocumentCommand{\gridImage}{O{} m}{
+    \includegraphics[width=\linewidth,#1]{#2}
+}
+
+% \codeListing[language][minted options]{path}{caption}{post-caption commands}
+\NewDocumentCommand{\codeListing}{O{cpp} O{} m m m}{
+    \par\addvspace{\baselineskip}
+    \captionof{listing}{#4}
+    #5
+    \inputminted[
+        linenos,
+        firstnumber=1,
+        numbersep=10pt,
+        fontsize=\small,
+        #2
+    ]{#1}{#3}
+    \par\addvspace{\baselineskip}
+}
+
+% \fullPageFigure{path}{caption}{post-caption commands}
+\newcommand{\fullPageFigure}[3]{
+    \clearpage
+    \begingroup
+        \pdfpagewidth=420mm
+        \pdfpageheight=297mm
+        \paperwidth=\pdfpagewidth
+        \paperheight=\pdfpageheight
+        \textwidth=\dimexpr\paperwidth-30mm\relax
+        \textheight=\dimexpr\paperheight-30mm\relax
+        \hsize=\textwidth
+        \linewidth=\textwidth
+        \columnwidth=\textwidth
+        \oddsidemargin=\dimexpr15mm-1in\relax
+        \evensidemargin=\oddsidemargin
+        \topmargin=\dimexpr15mm-1in\relax
+        \headheight=0pt
+        \headsep=0pt
+        \footskip=0pt
+        \thispagestyle{empty}
+        \null
+        \refstepcounter{figure}
+        #3
+        \begin{tikzpicture}[remember picture, overlay]
+            \node[anchor=north] at ([yshift=-15mm]current page.north) {
+                \includegraphics[
+                    width=390mm,
+                    height=235mm,
+                    keepaspectratio
+                ]{#1}
+            };
+            \node[
+                anchor=south,
+                align=center,
+                font=\normalsize
+            ] at ([yshift=10mm]current page.south) {
+                Рис.~\thefigure: #2\\[0.45cm]
+                \thepage
+            };
+        \end{tikzpicture}
+        \clearpage
+    \endgroup
+    \restoregeometry
+    \pdfpagewidth=\paperwidth
+    \pdfpageheight=\paperheight
+}
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+% Entity-relationship diagram styles derived from tikz-er2 by Pavel Caldo.
+\tikzstyle{every entity} = []
+\tikzstyle{every weak entity} = []
+\tikzstyle{every attribute} = []
+\tikzstyle{every relationship} = []
+\tikzstyle{every link} = []
+\tikzstyle{every isa} = []
+\tikzstyle{link} = [>=triangle 60, draw, thick, every link]
+\tikzstyle{total} = [link, double, double distance=3pt]
+\tikzstyle{entity} = [rectangle, draw, black, very thick,
+                      minimum width=6em, minimum height=3em,
+                      every entity]
+\tikzstyle{weak entity} = [entity, double, double distance=2pt,
+                           every weak entity]
+\tikzstyle{ident relationship} = [relationship, double, double distance=2pt]
+\tikzstyle{attribute} = [ellipse, draw, thin, black,
+                         minimum width=4em, minimum height=2em,
+                         text width=4em, align=center,
+                         every attribute]
+\tikzstyle{multi attribute} = [attribute, double, double distance=1.5pt]
+\tikzstyle{derived attribute} = [attribute, dashed]
+\tikzstyle{key attribute} = [attribute]
+\tikzstyle{relationship} = [diamond, draw, black, very thick,
+                            minimum width=6em, minimum height=4em,
+                            aspect=1.5,
+                            every relationship]
+\tikzstyle{isa} = [regular polygon, regular polygon sides=3,
+                   draw, black, very thick,
+                   minimum width=4em, minimum height=4em,
+                   every isa]
+\providecommand{\key}[1]{\underline{#1}}
+%</package>
+%    \end{macrocode}
+%
+% \Finale

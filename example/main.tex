@@ -1,0 +1,16 @@
+\documentclass[a4paper]{article}
+\usepackage{poly-report}
+
+\begin{document}
+
+\section{Проверка пакета}
+
+Общий стиль успешно подключён.
+
+\begin{tikzpicture}
+    \node[entity] (entity) {Сущность};
+    \node[attribute, right=of entity] (attribute) {Атрибут};
+    \draw[link] (entity) -- (attribute);
+\end{tikzpicture}
+
+\end{document}
