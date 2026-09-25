@@ -38,4 +38,15 @@ make install
   {\label{fig:schema}}
 ```
 
+Для наложения скриншотов на страницу, подключённую через `pdfpages`, можно
+задать смысловые анкоры и позиционировать изображения относительно них:
+
+```tex
+\begin{tikzpicture}[remember picture, overlay]
+  \exerciseAnchor{exercise-1-1-4}{23mm}{105mm}
+  \screenAt[height=22mm,keepaspectratio]
+    {exercise-1-1-4}{0mm}{0mm}{164mm}{img/1.1_4.png}
+\end{tikzpicture}
+```
+
 Стили ER-диаграмм основаны на `tikz-er2` Павла Caldo (2009).

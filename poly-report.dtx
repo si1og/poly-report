@@ -28,7 +28,7 @@
 %    \begin{macrocode}
 %<*package>
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{poly-report}[2026/09/09 Shared university report style]
+\ProvidesPackage{poly-report}[2026/09/25 Shared university report style]
 
 \RequirePackage[14pt]{extsizes}
 \RequirePackage[T2A]{fontenc}
@@ -138,6 +138,26 @@
 
 \NewDocumentCommand{\gridImage}{O{} m}{
     \includegraphics[width=\linewidth,#1]{#2}
+}
+
+% Semantic anchor on an included PDF page.
+% \exerciseAnchor{name}{x from page left}{y from page top}
+\NewDocumentCommand{\exerciseAnchor}{m m m}{
+    \coordinate (#1) at
+        ([xshift=#2,yshift=-#3]current page.north west);
+}
+
+% Place a screenshot relative to a semantic PDF-page anchor.
+% \screenAt[includegraphics options]{anchor}{x offset}{y offset}{width}{path}
+\NewDocumentCommand{\screenAt}{O{} m m m m m}{
+    \node[
+        anchor=north west,
+        inner sep=0pt,
+        xshift=#3,
+        yshift=-#4
+    ] at (#2) {
+        \includegraphics[width=#5,#1]{#6}
+    };
 }
 
 % \codeListing[language][minted options]{path}{caption}{post-caption commands}
