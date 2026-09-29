@@ -241,12 +241,12 @@
     db schema annotation/.style={font=\scriptsize},
 }
 
-% \dbSchemaTable[attribute width]{node name}{position}{rows}
-\NewDocumentCommand{\dbSchemaTable}{O{12em} m m +m}{%
-    \node[inner sep=0pt, anchor=north] (#2) at (#3) {%
+% \dbSchemaTable[attribute width][horizontal lines]{node name}{position}{rows}
+\NewDocumentCommand{\dbSchemaTable}{O{12em} O{1-3} m m +m}{%
+    \node[inner sep=0pt, anchor=north] (#3) at (#4) {%
         \begin{tblr}{
             colspec={Q[c,1.5em]Q[l,#1]},
-            hline{1-3}={solid},
+            hline{#2}={solid},
             hline{Z}={solid},
             vlines,
             rows={
@@ -257,7 +257,7 @@
             row{1}={font=\bfseries\small, halign=c},
             column{1}={font=\itshape\footnotesize, halign=c},
         }
-            #4
+            #5
         \end{tblr}%
     };%
 }
