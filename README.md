@@ -38,6 +38,33 @@ make install
   {\label{fig:schema}}
 ```
 
+Для схем объектов базы данных пакет предоставляет таблицы, справочники,
+метки полей и стили связей:
+
+```tex
+\begin{tikzpicture}
+  \dbSchemaTable{typeface}{0,0}{
+    \SetCell[c=2]{c} Typeface & \\
+    PK & \dbFieldMark{typeface-pk}{id\_Typeface} \\
+       & Name \\
+  }
+
+  \dbSchemaDictionary{weight}{18em,0}{
+    \SetCell[c=2]{c} Weight & \\
+    PK & \dbFieldMark{weight-pk}{id\_Weight} \\
+       & Name \\
+  }
+
+  \draw[db schema link]
+    (typeface.east) -- node[db schema cardinality] {$\infty$}
+    (weight.west);
+  \node[db schema annotation, above=0.3em of typeface] {Основная таблица};
+\end{tikzpicture}
+```
+
+Необязательный первый аргумент `\dbSchemaTable` и
+`\dbSchemaDictionary` задаёт ширину столбца атрибутов.
+
 Для наложения скриншотов на страницу, подключённую через `pdfpages`, можно
 задать смысловые анкоры и позиционировать изображения относительно них:
 

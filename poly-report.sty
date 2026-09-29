@@ -21,7 +21,7 @@
 %% same distribution. (The sources need not necessarily be
 %% in the same archive or directory.)
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{poly-report}[2026/09/25 Shared university report style]
+\ProvidesPackage{poly-report}[2026/09/30 Shared university report style]
 
 \RequirePackage[14pt]{extsizes}
 \RequirePackage[T2A]{fontenc}
@@ -40,6 +40,7 @@
 \usetikzlibrary{patterns.meta}
 \usetikzlibrary{arrows}
 \usetikzlibrary{fit}
+\usetikzlibrary{tikzmark}
 
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
@@ -208,6 +209,60 @@
 }
 
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\NewDocumentCommand{\dbFieldMark}{m m}{
+    \tikzmarknode{#1}{#2}
+}
+
+\tikzset{
+    db schema link/.style={thick},
+    db schema cardinality/.style={
+        font=\scriptsize,
+        fill=white,
+        inner sep=1pt
+    },
+    db schema annotation/.style={font=\scriptsize},
+}
+
+\NewDocumentCommand{\dbSchemaTable}{O{12em} m m +m}{%
+    \node[inner sep=0pt, anchor=north] (#2) at (#3) {%
+        \begin{tblr}{
+            colspec={Q[c,1.5em]Q[l,#1]},
+            hline{1-3}={solid},
+            hline{Z}={solid},
+            vlines,
+            rows={
+                font=\ttfamily\footnotesize,
+                abovesep=2pt,
+                belowsep=2pt
+            },
+            row{1}={font=\bfseries\small, halign=c},
+            column{1}={font=\itshape\footnotesize, halign=c},
+        }
+            #4
+        \end{tblr}%
+    };%
+}
+
+\NewDocumentCommand{\dbSchemaDictionary}{O{7em} m m +m}{%
+    \node[inner sep=0pt, anchor=north] (#2) at (#3) {%
+        \begin{tblr}{
+            colspec={Q[c,1.5em]Q[l,#1]},
+            hline{1-3}={solid},
+            hline{Z}={solid},
+            vlines,
+            rows={
+                font=\ttfamily\footnotesize,
+                abovesep=2pt,
+                belowsep=2pt
+            },
+            row{1}={font=\bfseries\scriptsize, halign=c},
+            column{1}={font=\itshape\footnotesize, halign=c},
+        }
+            #4
+        \end{tblr}%
+    };%
+}
 
 \tikzstyle{every entity} = []
 \tikzstyle{every weak entity} = []

@@ -13,4 +13,24 @@
     \draw[link] (entity) -- (attribute);
 \end{tikzpicture}
 
+\begin{tikzpicture}
+    \dbSchemaTable{typeface}{0,0}{
+        \SetCell[c=2]{c} Typeface & \\
+        PK & \dbFieldMark{typeface-pk}{id\_Typeface} \\
+           & Name \\
+    }
+
+    \dbSchemaDictionary{weight}{18em,0}{
+        \SetCell[c=2]{c} Weight & \\
+        PK & \dbFieldMark{weight-pk}{id\_Weight} \\
+           & Name \\
+    }
+
+    \draw[db schema link]
+        (typeface.east)
+        -- node[db schema cardinality, above] {$\infty$}
+        node[db schema annotation, below] {по id\_Weight}
+        (weight.west);
+\end{tikzpicture}
+
 \end{document}
