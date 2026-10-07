@@ -36,6 +36,10 @@ make install
   {tex/graphics/schema.pdf}
   {Схема базы данных}
   {\label{fig:schema}}
+
+\begin{aThreePortraitPage}
+  Содержимое отдельной вертикальной страницы A3 с полями отчёта.
+\end{aThreePortraitPage}
 ```
 
 Для схем объектов базы данных пакет предоставляет таблицы, справочники,

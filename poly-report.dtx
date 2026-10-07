@@ -223,6 +223,40 @@
     \pdfpageheight=\paperheight
 }
 
+% Content page in portrait A3 format with the report margins.
+\NewDocumentEnvironment{aThreePortraitPage}{}{
+    \clearpage
+    \begingroup
+        \pdfpagewidth=297mm
+        \pdfpageheight=420mm
+        \paperwidth=\pdfpagewidth
+        \paperheight=\pdfpageheight
+        \newgeometry{
+            layoutwidth=297mm,
+            layoutheight=420mm,
+            left=25mm,
+            right=25mm,
+            top=20mm,
+            bottom=20mm
+        }
+        \thispagestyle{empty}
+        \ignorespaces
+}{
+        \par
+        \begin{tikzpicture}[remember picture, overlay]
+            \node[anchor=south] at
+                ($(current page.south west)+(148.5mm,10mm)$) {
+                \thepage
+            };
+        \end{tikzpicture}
+        \clearpage
+    \endgroup
+    \restoregeometry
+    \pdfpagewidth=\paperwidth
+    \pdfpageheight=\paperheight
+    \ignorespacesafterend
+}
+
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 
 % Database schema building blocks.
