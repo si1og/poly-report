@@ -20,6 +20,7 @@ fonts = (
     ("sfrm1728", "CM Super 1728", "Regular"),
     ("sfbx1728", "CM Super 1728", "Bold"),
     ("sftt1200", "CM Super Typewriter 1200", "Regular"),
+    ("sfit1200", "CM Super Typewriter 1200", "Italic"),
 )
 
 for filename, family, weight in fonts:
