@@ -7,8 +7,9 @@ A3, рисунки, таблицы, листинги кода и блоки дл
 
 ## Требования и проверка
 
-Требуется Typst 0.15 или новее. Для основного шрифта нужен Times New Roman;
-его можно заменить параметром `font`.
+Требуется Typst 0.15 или новее. По умолчанию используется New Computer Modern
+— совместимый с кириллицей вариант привычного шрифта LaTeX. Его можно заменить
+параметром `font`.
 
 ```sh
 make test
@@ -24,7 +25,7 @@ make test
 ```typst
 #import "../poly-report.typ": report, image-figure, code-listing
 
-#show: report.with(font: "Times New Roman")
+#show: report
 
 = Введение
 

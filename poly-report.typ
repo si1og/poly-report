@@ -2,7 +2,7 @@
 
 #let report(
   body,
-  font: "Times New Roman",
+  font: "New Computer Modern",
   title-page: none,
   with-outline: false,
 ) = {
