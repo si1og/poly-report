@@ -7,9 +7,22 @@ A3, рисунки, таблицы, листинги кода и блоки дл
 
 ## Требования и проверка
 
-Требуется Typst 0.15 или новее. По умолчанию используется New Computer Modern
-— совместимый с кириллицей вариант привычного шрифта LaTeX. Его можно заменить
-параметром `font`.
+Требуется Typst 0.15 или новее. По умолчанию используется CMU Serif —
+совместимый с кириллицей вариант Computer Modern. Для точного шрифта старого
+LaTeX-отчёта подготовьте установленные в TeX Live шрифты CM-Super (нужны
+`kpsewhich` и FontForge):
+
+```sh
+make cm-super-fonts
+typst compile --font-path fonts/cm-super example/main.typ example/main.pdf
+```
+
+Полученные OTF-файлы сохраняют контуры исходных Type 1 шрифтов и не хранятся
+в репозитории. CM-Super распространяется по GPLv2+ с исключением для встраивания
+в PDF; см. `texmf-dist/doc/fonts/cm-super/README` в TeX Live. Для отчёта,
+набранного ими, укажите `font: "CM Super 1440"`,
+`code-font: "CM Super Typewriter 1200"` и
+`large-heading-font: "CM Super 1728"` в `report.with(...)`.
 
 ```sh
 make test
@@ -35,7 +48,7 @@ make test
 #code-listing(read("../src/query.sql"), [Текст запроса], lang: "sql") <lst:query>
 ```
 
-`report` настраивает лист A4, поля, русский язык, шрифт, абзацы, заголовки,
+`poly-report` настраивает лист A4, поля, русский язык, шрифт, абзацы, заголовки,
 подписи и нумерацию страниц. Содержание и титульный лист можно передать как
 `with-outline` и `title-page`:
 
@@ -86,20 +99,3 @@ make test
 `db-schema-table` и `db-schema-dictionary` оформляют таблицы сущностей;
 расположение и линии связей задаются в самом документе средствами Typst либо
 отдельной библиотекой диаграмм.
-
-## Переход с LaTeX
-
-Макросы LaTeX не импортируются в Typst автоматически. Соответствия:
-
-| LaTeX | Typst |
-| --- | --- |
-| `\img` / `\screenshot` | `image-figure` |
-| `\imgGrid` | `image-grid` |
-| `\codeListing` | `code-listing` |
-| `\fullPageFigure` | `full-page-figure` |
-| `aThreePortraitPage` | `a3-page(landscape: false)` |
-| `\dbSchemaTable` | `db-schema-table` |
-| `\dbSchemaDictionary` | `db-schema-dictionary` |
-
-Существующие `.tex`-отчёты продолжают собираться с версией из
-`deprecated/latex`; их перенос выполняется отдельно.
