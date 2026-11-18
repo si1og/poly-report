@@ -1,3 +1,5 @@
+*.pdf
+!example/assets/*.pdf
 *.aux
 *.fdb_latexmk
 *.fls
@@ -5,4 +7,3 @@
 *.out
 *.toc
 _minted*/
-example/main.pdf

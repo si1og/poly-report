@@ -1,22 +1,8 @@
-PACKAGE := poly-report
-TEXMFHOME := $(shell kpsewhich -var-value=TEXMFHOME)
-INSTALL_DIR := $(TEXMFHOME)/tex/latex/$(PACKAGE)
+.PHONY: test clean
 
-.PHONY: all install test clean
-
-all: $(PACKAGE).sty
-
-$(PACKAGE).sty: $(PACKAGE).dtx $(PACKAGE).ins
-	latex -interaction=nonstopmode -halt-on-error $(PACKAGE).ins
-
-install: $(PACKAGE).sty
-	mkdir -p "$(INSTALL_DIR)"
-	install -m 0644 $(PACKAGE).sty "$(INSTALL_DIR)/$(PACKAGE).sty"
-	mktexlsr "$(TEXMFHOME)"
-
-test: $(PACKAGE).sty
-	cd example && TEXINPUTS=..: latexmk -g -pdf -shell-escape -interaction=nonstopmode -halt-on-error main.tex
+test:
+	typst compile --root . example/main.typ example/main.pdf
+	typst compile --root . example/long.typ example/long.pdf
 
 clean:
-	rm -f $(PACKAGE).sty $(PACKAGE).log $(PACKAGE).aux
-	cd example && latexmk -C main.tex
+	rm -f example/main.pdf

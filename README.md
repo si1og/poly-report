@@ -1,85 +1,104 @@
 # poly-report
 
-Общий LaTeX-пакет для учебных отчётов: оформление страницы, таблицы,
-листинги `minted`, изображения, полноформатные страницы A3 и стили ER-диаграмм.
+Набор Typst-пресетов для учебных отчётов: русская типографика, страницы A4 и
+A3, рисунки, таблицы, листинги кода и блоки для схем баз данных.
 
-## Сборка и установка
+Версия пакета на LaTeX сохранена в ветке `deprecated/latex`.
+
+## Требования и проверка
+
+Требуется Typst 0.15 или новее. Для основного шрифта нужен Times New Roman;
+его можно заменить параметром `font`.
 
 ```sh
-make
 make test
-make install
 ```
 
-`make` генерирует `poly-report.sty` из `poly-report.dtx` через `docstrip`.
-`make install` устанавливает пакет в локальный `TEXMFHOME`.
+Команда создаёт `example/main.pdf` и проверяет перенос длинного листинга
+на нескольких страницах. Установка в TeX не требуется:
+подключите модуль через относительный путь или скопируйте `poly-report.typ` в
+проект отчёта.
 
-После установки пакет подключается обычной командой:
+## Подключение
 
-```tex
-\usepackage{poly-report}
+```typst
+#import "../poly-report.typ": report, image-figure, code-listing
+
+#show: report.with(font: "Times New Roman")
+
+= Введение
+
+Текст отчёта.
+
+#image-figure(image("img/result.png", width: 90%), [Результат запроса]) <fig:result>
+#code-listing(read("../src/query.sql"), [Текст запроса], lang: "sql") <lst:query>
 ```
 
-Для сборки документов с `minted` необходим параметр `-shell-escape`.
+`report` настраивает лист A4, поля, русский язык, шрифт, абзацы, заголовки,
+подписи и нумерацию страниц. Содержание и титульный лист можно передать как
+`with-outline` и `title-page`:
 
-## Основные макросы
-
-```tex
-\img[0.9]{img/result.png}{Результат}{\label{fig:result}}
-
-\codeListing[cpp][firstline=10,lastline=30]
-  {../src/main.cpp}
-  {Основная функция}
-  {\label{lst:main}}
-
-\fullPageFigure
-  {tex/graphics/schema.pdf}
-  {Схема базы данных}
-  {\label{fig:schema}}
-
-\begin{aThreePortraitPage}
-  Содержимое отдельной вертикальной страницы A3 с полями отчёта.
-\end{aThreePortraitPage}
+```typst
+#show: report.with(
+  title-page: [
+    #align(center)[*Отчёт по лабораторной работе*]
+  ],
+  with-outline: true,
+)
 ```
 
-Для схем объектов базы данных пакет предоставляет таблицы, справочники,
-метки полей и стили связей:
+## Пресеты
 
-```tex
-\begin{tikzpicture}
-  \dbSchemaTable{typeface}{0,0}{
-    \SetCell[c=2]{c} Typeface & \\
-    PK & \dbFieldMark{typeface-pk}{id\_Typeface} \\
-       & Name \\
-  }
+```typst
+#import "../poly-report.typ": image-figure, image-grid, code-listing
+#import "../poly-report.typ": a3-page, full-page-figure
+#import "../poly-report.typ": db-schema-table, db-schema-dictionary
 
-  \dbSchemaDictionary{weight}{18em,0}{
-    \SetCell[c=2]{c} Weight & \\
-    PK & \dbFieldMark{weight-pk}{id\_Weight} \\
-       & Name \\
-  }
+#image-figure(image("img/result.png", width: 90%), [Результат]) <fig:result>
 
-  \draw[db schema link]
-    (typeface.east) -- node[db schema cardinality] {$\infty$}
-    (weight.west);
-  \node[db schema annotation, above=0.3em of typeface] {Основная таблица};
-\end{tikzpicture}
+#image-grid(
+  (image("img/left.png", width: 100%), image("img/right.png", width: 100%)),
+  [Сравнение результатов],
+) <fig:comparison>
+
+#code-listing(read("../src/main.sql"), [Основной запрос], lang: "sql") <lst:main>
+
+#full-page-figure(
+  image("img/schema.pdf", width: 100%, height: 235mm, fit: "contain"),
+  [Схема базы данных],
+) <fig:schema>
+
+#a3-page(landscape: false)[
+  = Дополнительная схема
+  Содержимое отдельной страницы A3.
+]
+
+#db-schema-table("Typeface", (
+  ("PK", "id_Typeface"),
+  ("", "Name"),
+  ("FK", "id_Weight"),
+))
 ```
 
-Необязательный первый аргумент `\dbSchemaTable` и
-`\dbSchemaDictionary` задаёт ширину столбца атрибутов. Второй необязательный
-аргумент `\dbSchemaTable` задаёт номера горизонтальных границ; например,
-`[1-2,4]` проводит линию после двух полей составного первичного ключа.
+`full-page-figure` помещает рисунок на отдельную страницу A3 в альбомной
+ориентации. `a3-page` принимает содержимое отдельной страницы A3. Блоки
+`db-schema-table` и `db-schema-dictionary` оформляют таблицы сущностей;
+расположение и линии связей задаются в самом документе средствами Typst либо
+отдельной библиотекой диаграмм.
 
-Для наложения скриншотов на страницу, подключённую через `pdfpages`, можно
-задать смысловые анкоры и позиционировать изображения относительно них:
+## Переход с LaTeX
 
-```tex
-\begin{tikzpicture}[remember picture, overlay]
-  \exerciseAnchor{exercise-1-1-4}{23mm}{105mm}
-  \screenAt[height=22mm,keepaspectratio]
-    {exercise-1-1-4}{0mm}{0mm}{164mm}{img/1.1_4.png}
-\end{tikzpicture}
-```
+Макросы LaTeX не импортируются в Typst автоматически. Соответствия:
 
-Стили ER-диаграмм основаны на `tikz-er2` Павла Caldo (2009).
+| LaTeX | Typst |
+| --- | --- |
+| `\img` / `\screenshot` | `image-figure` |
+| `\imgGrid` | `image-grid` |
+| `\codeListing` | `code-listing` |
+| `\fullPageFigure` | `full-page-figure` |
+| `aThreePortraitPage` | `a3-page(landscape: false)` |
+| `\dbSchemaTable` | `db-schema-table` |
+| `\dbSchemaDictionary` | `db-schema-dictionary` |
+
+Существующие `.tex`-отчёты продолжают собираться с версией из
+`deprecated/latex`; их перенос выполняется отдельно.
