@@ -7,36 +7,36 @@ A3, рисунки, таблицы, листинги кода и блоки дл
 
 ## Требования и проверка
 
-Требуется Typst 0.15 или новее. По умолчанию используется CMU Serif —
-совместимый с кириллицей вариант Computer Modern. Для точного шрифта старого
-LaTeX-отчёта подготовьте установленные в TeX Live шрифты CM-Super (нужны
-`kpsewhich` и FontForge):
+Требуется Typst 0.15 или новее. По умолчанию отчёт использует CM-Super.
+Установите шрифты в пользовательский каталог один раз. Для конвертации нужны
+TeX Live с CM-Super, `kpsewhich` и FontForge.
 
 ```sh
-make cm-super-fonts
-typst compile --font-path fonts/cm-super example/main.typ example/main.pdf
+make install-fonts
+typst compile example/main.typ example/main.pdf
 ```
 
-Полученные OTF-файлы сохраняют контуры исходных Type 1 шрифтов и не хранятся
-в репозитории. CM-Super распространяется по GPLv2+ с исключением для встраивания
-в PDF; см. `texmf-dist/doc/fonts/cm-super/README` в TeX Live. Для отчёта,
-набранного ими, укажите `font: "CM Super 1440"`,
-`code-font: "CM Super Typewriter 1200"` и
-`large-heading-font: "CM Super 1728"` в `report.with(...)`.
+Типографические контуры берутся из исходных Type 1 шрифтов. OTF-файлы
+не хранятся в репозитории. CM-Super распространяется по GPLv2+ с исключением
+для встраивания в PDF. См. `texmf-dist/doc/fonts/cm-super/README` в TeX Live.
+Typst находит установленные шрифты автоматически. Параметры `font`,
+`code-font` и `large-heading-font` позволяют выбрать другие семейства.
 
 ```sh
 make test
 ```
 
 Команда создаёт `example/main.pdf` и проверяет перенос длинного листинга
-на нескольких страницах. Установка в TeX не требуется:
-подключите модуль через относительный путь или скопируйте `poly-report.typ` в
-проект отчёта.
+на нескольких страницах.
 
 ## Подключение
 
+Установите локальный пакет командой `make install-package`.
+Она создаёт ссылку на текущий checkout, поэтому правки в библиотеке сразу
+доступны при следующей сборке отчёта.
+
 ```typst
-#import "../poly-report.typ": report, image-figure, code-listing
+#import "@local/poly-report:0.1.0": report, image-figure, code-listing
 
 #show: report
 
@@ -63,10 +63,24 @@ make test
 
 ## Пресеты
 
+Размеры соответствуют шкале LaTeX `extsizes` для 14 pt. Доступны
+`tiny`, `scriptsize`, `footnotesize`, `small`, `normalsize`, `large`,
+`Large`, `LARGE`, `huge` и `Huge`. Функция `large` также выбирает
+оптическое семейство CM Super 1728. Для смены только кегля доступны
+значения в `latex-size`.
+
 ```typst
-#import "../poly-report.typ": image-figure, image-grid, code-listing
-#import "../poly-report.typ": a3-page, full-page-figure
-#import "../poly-report.typ": db-schema-table, db-schema-dictionary
+#import "@local/poly-report:0.1.0": large, latex-size
+
+#large[Название отчёта]
+#set text(size: latex-size.small)
+Текст меньшего размера.
+```
+
+```typst
+#import "@local/poly-report:0.1.0": image-figure, image-grid, code-listing
+#import "@local/poly-report:0.1.0": a3-page, full-page-figure
+#import "@local/poly-report:0.1.0": db-schema-table, db-schema-dictionary
 
 #image-figure(image("img/result.png", width: 90%), [Результат]) <fig:result>
 

@@ -2,14 +2,48 @@
 
 #let lovelace-theme = read("themes/lovelace.tmTheme", encoding: none)
 
+// The size14.clo scale from LaTeX extsizes, converted from TeX pt to PDF pt.
+#let latex-pt(size) = size * (72 / 72.27) * 1pt
+#let latex-size = (
+  tiny: latex-pt(6),
+  scriptsize: latex-pt(8),
+  footnotesize: latex-pt(10),
+  small: latex-pt(12),
+  normalsize: latex-pt(14.4),
+  large: latex-pt(17.28),
+  Large: latex-pt(20.74),
+  LARGE: latex-pt(24.88),
+  huge: latex-pt(29.86),
+  Huge: latex-pt(35.83),
+)
+
+#let default-font = "CM Super 1440"
+#let default-code-font = "CM Super Typewriter 1200"
+#let default-large-font = "CM Super 1728"
+
+#let tiny = text.with(size: latex-size.tiny)
+#let scriptsize = text.with(size: latex-size.scriptsize)
+#let footnotesize = text.with(size: latex-size.footnotesize)
+#let small = text.with(size: latex-size.small)
+#let normalsize = text.with(size: latex-size.normalsize)
+#let large = text.with(size: latex-size.large, font: default-large-font)
+#let Large = text.with(size: latex-size.Large)
+#let LARGE = text.with(size: latex-size.LARGE)
+#let huge = text.with(size: latex-size.huge)
+#let Huge = text.with(size: latex-size.Huge)
+
 #let report(
   body,
-  font: "CMU Serif",
-  code-font: "CMU Typewriter Text",
-  large-heading-font: none,
+  font: default-font,
+  code-font: default-code-font,
+  large-heading-font: auto,
   title-page: none,
   with-outline: false,
 ) = {
+  let heading-font = if large-heading-font == auto {
+    if font == default-font { default-large-font } else { font }
+  } else if large-heading-font == none { font } else { large-heading-font }
+
   set document(title: "Учебный отчёт")
   set page(
     paper: "a4",
@@ -26,7 +60,7 @@
   set enum(indent: 9.3pt, body-indent: 0.34em, spacing: 18pt)
   show enum: set block(above: 19pt, below: 27pt)
   show heading: set text(weight: "bold")
-  show heading.where(level: 1): set text(font: if large-heading-font == none { font } else { large-heading-font }, size: 17.28pt)
+  show heading.where(level: 1): set text(font: heading-font, size: 17.28pt)
   show heading.where(level: 2): set text(size: 14.4pt)
   show heading.where(level: 3): set text(size: 14.4pt)
   show heading.where(level: 3): set block(below: 15pt)

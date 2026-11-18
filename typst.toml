@@ -1,0 +1,8 @@
+[package]
+name = "poly-report"
+version = "0.1.0"
+entrypoint = "poly-report.typ"
+authors = ["Ilya Semenov"]
+license = "MIT"
+description = "Typst presets for university reports"
+compiler = "0.15.0"
